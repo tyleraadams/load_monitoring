@@ -3,21 +3,20 @@ var express = require('express'),
   mongoose = require('mongoose'),
   Uptime = mongoose.model('Uptime');
 var exec   = require('child_process').exec;
-var path   = require('path');
 var command = 'uptime';
 module.exports = function (app) {
   app.use('/', router);
 };
 
 router.get('/', function (req, res, next) {
-  // Uptime.find(function (err, articles) {
+  Uptime.find(function (err, uptimes) {
     // if (err) return next(err);
     // console.log(path.join(__dirname, '../..', 'run.sh'));
     // var command = spawn(path.join(__dirname, '../..', 'run.sh'));
-    exec(command, function (err, stdout, stderr){
+    // exec(command, function (err, stdout, stderr){
 
-      console.log(stdout)
-    });
+    //   console.log(stdout)
+    // });
 
     // var output  = [];
 
@@ -35,9 +34,10 @@ router.get('/', function (req, res, next) {
     //     // res.send(500); // when the script fails, generate a Server Error HTTP response
     //   }
     // });
-    // res.render('index', {
-    //   title: 'Generator-Express MVC',
-    //   articles: articles
-    // });
-  // });
+    console.log(uptimes);
+    res.render('index', {
+      title: 'Generator-Express MVC',
+      uptimes: uptimes
+    });
+  });
 });

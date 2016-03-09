@@ -13,8 +13,7 @@ db.on('error', function () {
 var models = glob.sync(config.root + '/app/models/*.js');
 var Uptime;
 models.forEach(function (model) {
-
-  Uptime = require(model);
+  require(model);
 });
 var app = express();
 
@@ -23,12 +22,15 @@ require('./config/express')(app, config);
 app.listen(config.port, function () {
   console.log('Express server listening on port ' + config.port);
 });
-
+var Uptime = require(config.root + '/app/models/uptime.js');
 // var os = require('os');
-// setInterval(function() {
-//   console.log(Uptime)
-//   var uptime = new Uptime({value: os.uptime()});
-//   uptime.save();
-//   console.log(uptime);
-// }, 10000);
+var exec   = require('child_process').exec;
+var command = 'uptime';
+setInterval(function() {
+  exec(command, function (err, stdout, stderr){
+    var uptime = new Uptime({value: stdout});
+    uptime.save();
+    console.log(JSON.stringify(uptime));
+  });
+}, 10000);
 

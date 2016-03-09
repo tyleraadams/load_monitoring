@@ -9,5 +9,6 @@ var UptimeSchema = new Schema({
 });
 
 
-mongoose.model('Uptime', UptimeSchema);
+module.exports = mongoose.model('Uptime', UptimeSchema);
+
 
