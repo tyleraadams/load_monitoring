@@ -24,11 +24,11 @@ app.listen(config.port, function () {
   console.log('Express server listening on port ' + config.port);
 });
 
-var os = require('os');
-setInterval(function() {
-  console.log(Uptime)
-  var uptime = new Uptime({value: os.uptime()});
-  uptime.save();
-  console.log(uptime);
-}, 10000);
+// var os = require('os');
+// setInterval(function() {
+//   console.log(Uptime)
+//   var uptime = new Uptime({value: os.uptime()});
+//   uptime.save();
+//   console.log(uptime);
+// }, 10000);
 
