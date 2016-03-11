@@ -85,9 +85,9 @@ var svg = d3.select("body").append("svg")
       .attr("y", 6)
       .attr("dy", ".71em")
       .style("text-anchor", "end")
-      .text("Price ($)");
+      .text("Load Avg");
 
-  svg.append("path")
+  var path = svg.append("path")
       .datum(data)
       .attr("class", "line")
       .attr("d", line);
@@ -98,6 +98,49 @@ function type(d) {
   d.close = +d.close;
   return d;
 }
+
+function poll(fn, callback, errback, timeout, interval) {
+    var endTime = Number(new Date()) + (timeout || 2000);
+    interval = interval || 100;
+
+    (function p() {
+            // If the condition is met, we're done!
+            if(fn()) {
+                callback();
+            }
+            // If the condition isn't met but the timeout hasn't elapsed, go again
+            // else if (Number(new Date()) < endTime) {
+
+            // }
+            // Didn't match and too much time, reject!
+            else {
+                errback(new Error('timed out for ' + fn + ': ' + arguments));
+            }
+            setTimeout(p, interval);
+    })();
+}
+
+// Usage:  ensure element is visible
+poll(
+    function() {
+        $.get('/uptime', function(newData,err) {
+           console.log('!!! ', newData[0]);
+           data.push(newData[0]);
+           // x.domain([0, width])
+           path.attr("d", line)
+            .attr("transform", null)
+            .transition()
+            .attr("transform", "translate(" + x(-1) + ",0)");
+            data.shift();
+        });
+    },
+    function() {
+        // Done, success callback
+    },
+    function() {
+        // Error, failure callback
+    }
+, null, 10000);
 
 });
 
