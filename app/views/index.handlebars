@@ -48,9 +48,9 @@ var x = d3.time.scale()
 var y = d3.scale.linear()
     .range([height, 0]);
 
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
+// var xAxis = d3.svg.axis()
+//     .scale(x)
+//     .orient("bottom");
 
 var yAxis = d3.svg.axis()
     .scale(y)
@@ -66,16 +66,20 @@ var svg = d3.select("body").append("svg")
   .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+var axis = svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(x.axis = d3.svg.axis().scale(x).orient("bottom"));
 // d3.json([{{uptimes}}], function(error, data) {
   // if (error) throw error;
 
   x.domain(d3.extent(data, function(d) { return new Date(d.created_at); }));
   y.domain(d3.extent(data, function(d) { return parseFloat(d.value) ; }));
 
-  svg.append("g")
-      .attr("class", "x axis")
-      .attr("transform", "translate(0," + height + ")")
-      .call(xAxis);
+  // svg.append("g")
+  //     .attr("class", "x axis")
+  //     .attr("transform", "translate(0," + height + ")")
+  //     .call(axis);
 
   svg.append("g")
       .attr("class", "y axis")
@@ -125,12 +129,38 @@ poll(
     function() {
         $.get('/uptime', function(newData,err) {
            console.log('!!! ', newData[0]);
-           data.push(newData[0]);
-           // x.domain([0, width])
+
            path.attr("d", line)
             .attr("transform", null)
             .transition()
-            .attr("transform", "translate(" + x(-1) + ",0)");
+
+            var n = 243,
+    duration = 750,
+    // now = new Date(Date.now() - duration),
+    count = 0,
+            now = new Date();
+            x.domain([now - (n - 2) * duration, now - duration]);
+    y.domain([0, d3.max(data.map(function(item){return parseFloat(item.value)}))]);
+
+    // push the accumulated count onto the back, and reset the count
+    data.push(newData[0]);
+    count = 0;
+
+    // redraw the line
+    svg.select(".line")
+        .attr("d", line)
+        .attr("transform", null);
+
+    // slide the x-axis left
+    axis.call(x.axis);
+
+    // slide the line left
+    path.transition()
+        .attr("transform", "translate(" + x(now - (n - 1) * duration) + ")");
+
+    // pop the old data point off the front
+    // scrollData.shift();
+            // .attr("transform", "translate(" + x(-1) + ")");
             data.shift();
         });
     },
