@@ -9,7 +9,8 @@ module.exports = function (app) {
 };
 
 router.get('/', function (req, res, next) {
-  Uptime.find(function (err, uptimes) {
+  var query = Uptime.find({}).sort({created_at:-1}).limit(60);
+  query.exec( function (err, uptimes) {
     // if (err) return next(err);
     // console.log(path.join(__dirname, '../..', 'run.sh'));
     // var command = spawn(path.join(__dirname, '../..', 'run.sh'));
@@ -34,10 +35,18 @@ router.get('/', function (req, res, next) {
     //     // res.send(500); // when the script fails, generate a Server Error HTTP response
     //   }
     // });
-    console.log(uptimes);
+    // console.log(uptimes);
     res.render('index', {
       title: 'Generator-Express MVC',
-      uptimes: uptimes
+      // uptimes: uptimes
     });
+  });
+});
+
+
+router.get('/uptime', function (req,res, next) {
+  var query = Uptime.find({}).sort({created_at:-1}).limit(60);
+  query.exec(function (err, uptimes) {
+    res.send(uptimes);
   });
 });

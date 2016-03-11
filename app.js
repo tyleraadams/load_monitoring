@@ -28,7 +28,8 @@ var exec   = require('child_process').exec;
 var command = 'uptime';
 setInterval(function() {
   exec(command, function (err, stdout, stderr){
-    var uptime = new Uptime({value: stdout});
+    var oneMinuteUptimeValue = stdout.match(/\d+\.\d*/)[0];
+    var uptime = new Uptime({value: oneMinuteUptimeValue});
     uptime.save();
     console.log(JSON.stringify(uptime));
   });
