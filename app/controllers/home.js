@@ -1,7 +1,8 @@
 var express = require('express'),
   router = express.Router(),
   mongoose = require('mongoose'),
-  Uptime = mongoose.model('Uptime');
+  Uptime = mongoose.model('Uptime'),
+  Alert = mongoose.model('Alert');
 var exec   = require('child_process').exec;
 var command = 'uptime';
 module.exports = function (app) {
@@ -36,17 +37,37 @@ router.get('/', function (req, res, next) {
     //   }
     // });
     // console.log(uptimes);
-    res.render('index', {
-      title: 'Generator-Express MVC',
-      // uptimes: uptimes
+    var query = Uptime.find({
+      created_at: {
+        $gt: new Date(new Date().getTime() - 1000 * 60 * 10).toISOString()
+      }
+    }).sort({created_at:-1});
+    query.exec(function (err, uptimes) {
+      Alert.find({}, function(err, alerts) {
+        res.render('index', {
+          title: 'Generator-Express MVC',
+          uptimes: JSON.stringify(uptimes),
+          alerts: alerts
+        });
+      });
+      // console.error(err);
+      // console.log(uptimes.length);
+
     });
+
   });
 });
 
 
 router.get('/uptime', function (req,res, next) {
-  var query = Uptime.find({}).sort({created_at:-1}).limit(60);
-  query.exec(function (err, uptimes) {
-    res.send(uptimes);
-  });
+  // var query = Uptime.findOne({
+
+  // }).sort({created_at:-1});
+  // query.exec(function (err, uptimes) {
+  //   // console.error(err);
+  //   console.log(uptimes.length);
+  //   res.send(uptimes);
+  // });
+
+  Uptime.findOne().sort({created_at: -1}).exec(function(err, uptime) { console.log(JSON.stringify(uptime)); res.send(uptime); });
 });
