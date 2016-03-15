@@ -7,6 +7,7 @@ var AlertSchema = new Schema({
   load: String,
   time: Date,
   uptime: String,
+  recovered_at: String,
   created_at: { type: Date, default: Date.now }
 });
 

@@ -16,6 +16,18 @@ UptimeSchema.methods.findLastTen = function (cb) {
   });
   // return this.model('Uptime').find({ }, cb);
 }
+
+UptimeSchema.statics.findLastTwoMinutes = function (cb) {
+  var q = this.model('Uptime').find({created_at: {
+        $gt: new Date(new Date().getTime() - 1000 * 60 * 2).toISOString()
+      }}).sort({'crated_at': -1});
+  q.exec(cb);
+
+
+
+
+  // return this.model('Uptime').find({ }, cb);
+}
 module.exports = mongoose.model('Uptime', UptimeSchema);
 
 
