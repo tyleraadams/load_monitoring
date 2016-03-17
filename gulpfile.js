@@ -6,12 +6,12 @@ var gulp = require('gulp'),
   browserify = require('browserify'),
   source = require('vinyl-source-stream');
 
-var sourceFile = './app/scripts/app.js',
+var sourceFile = './app/src/scripts/app.js',
   destFolder = './public/js',
   destFileName = 'app.js';
 
 gulp.task('sass', function () {
-  gulp.src('./public/css/*.scss')
+  gulp.src('./app/src/scss/*.scss')
     .pipe(plumber())
     .pipe(sass())
     .pipe(gulp.dest('./public/css'))
@@ -19,7 +19,7 @@ gulp.task('sass', function () {
 });
 
 gulp.task('watch', function() {
-  gulp.watch('./public/css/*.scss', ['sass']);
+  gulp.watch('./app/src/sass/*.scss', ['sass']);
 });
 
 gulp.task('develop', function () {
