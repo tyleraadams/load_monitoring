@@ -1,3 +1,4 @@
+'use strict';
 var express = require('express'),
   config = require('./config/config'),
   glob = require('glob'),
@@ -14,9 +15,21 @@ var managers = glob.sync(config.root + '/app/managers/*.js');
 models.forEach(function (model) {
   require(model);
 });
+
 managers.forEach(function (manager) {
-  require(manager)().init();
+  let scope = {};
+  scope[manager] = require(manager);
+  new scope[manager]().init();
+  console.log(scope[manager]());
+  // console.log(new require(manager)().init());
+  // new require(manager)().init();
 });
+
+
+// var Alert = require(config.root + '/app/managers/alerts');
+// var alert = new Alert();
+// alert.init();
+
 var app = express();
 
 require('./config/express')(app, config);

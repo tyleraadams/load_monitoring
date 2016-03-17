@@ -18,10 +18,12 @@
     "express-handlebars": "^3.0.0"
   },
   "devDependencies": {
+    "browserify": "^13.0.0",
     "gulp": "^3.9.0",
-    "gulp-sass": "^2.0.4",
-    "gulp-nodemon": "^2.0.2",
     "gulp-livereload": "^3.8.0",
-    "gulp-plumber": "^1.0.0"
+    "gulp-nodemon": "^2.0.2",
+    "gulp-plumber": "^1.0.0",
+    "gulp-sass": "^2.0.4",
+    "vinyl-source-stream": "^1.1.0"
   }
 }

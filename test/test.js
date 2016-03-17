@@ -1,16 +1,34 @@
-var assert = require('assert');
-
-var alertManager = require('../app/managers/alerts');
-var Uptime = require('../app/models/uptime');
+'use strict';
+let assert = require('assert');
+const AlertManager = require('../app/managers/alerts');
+const calculateAverage = require('../app/helpers/calculateAverage');
+let alertManager = new AlertManager();
 
 describe('alertManager', function() {
-  describe('#init()', function () {
-    it('should create an alert if the average load for the last two minutes exceeds one', function () {
+  describe('#determineAlertState()', function () {
+    it('should not create an alert if the average load for the last two minutes is less than one and there is no previous alert state in play', function () {
 
-      var stub = [{value: 1.1}, {value: 1.6}, {value: 1.5}, {value: 1.6}, {value: 1.5},{value: 2}];
-      assert.equal(alertManager(stub).init(),true);
-      stub = [{value: 0.8}, {value: 0.1}, {value: 0.2}, {value: 0.4}, {value: 0.5}];
+      const stub = [{value: 1.0}, {value: 0.7}, {value: 0.5}, {value: 0.9}, {value: 0.5},{value: 0.99}];
+      const avg = calculateAverage(stub.map(function(item){ return item.value; }));
+      alertManager.determineAlertState(avg);
+      assert.equal(alertManager.isInAlertState,false);
+
       // assert.equal(alertManager(stub).init(),false);
+    });
+
+    it('should create an alert if the average load for the last two minutes exceeds one', function () {
+      const stub = [{value: 1.1}, {value: 1.6}, {value: 1.5}, {value: 1.6}, {value: 1.5},{value: 2}];
+      const avg = calculateAverage(stub.map(function(item){ return item.value; }));
+      alertManager.determineAlertState(avg);
+      assert.equal(alertManager.isInAlertState,true);
+
+    });
+
+     it('should create an alert if the average load for the last two minutes drops below one', function () {
+      const stub = [{value: 0.8}, {value: 0.1}, {value: 0.2}, {value: 0.4}, {value: 0.5}];
+      const avg = calculateAverage(stub.map(function(item){ return item.value; }));
+      alertManager.determineAlertState(avg);
+      assert.equal(alertManager.isInAlertState,false);
     });
   });
 });
