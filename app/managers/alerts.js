@@ -27,23 +27,23 @@ AlertManager.prototype.init = function () {
   }, 10000);
 };
 
-AlertManager.prototype.createAlert =  function (dataPoint) {
+AlertManager.prototype.createAlert =  function (dataPoint, isRecovery) {
   'use strict';
   let alert = new Alert({
-    load:dataPoint
-    // time: uptime.created_at,
-    // uptime: uptime.id
+    load:dataPoint,
+    isRecovery: isRecovery
   });
   alert.save();
-  this.isInAlertState = true;
+
 };
 
 AlertManager.prototype.determineAlertState =  function  (avg) {
   'use strict';
   if (avg > 1) {
-    this.createAlert(avg);
+    this.createAlert(avg, false);
+     this.isInAlertState = true;
   } else if (avg < 1 && this.isInAlertState) {
-    this.createAlert(avg);
+    this.createAlert(avg, true);
     this.isInAlertState = false;
   }
 };

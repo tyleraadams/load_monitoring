@@ -16,8 +16,14 @@ module.exports = function () {
   function constructAlertDOM (alertObj) {
     console.log(alertObj);
     var alert = document.createElement('h2');
+    var message = 'High load generated an alert - load = ' + alertObj.load+ ', triggered at ' + alertObj.created_at;
     alert.classList.add('headline', 'alert');
-    alert.textContent = 'High load generated an alert - load = ' + alertObj.load+ ', triggered at ' +alertObj.created_at;
+
+    if (alertObj.isRecovery) {
+      message = 'Alert recovered at ' +  alertObj.created_at;
+    }
+
+    alert.textContent = message
     return alert;
   }
   function addToDOM(el) {

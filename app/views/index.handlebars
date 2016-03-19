@@ -1,3 +1,16 @@
 <h1>{{title}}</h1>
-<aside id="alerts-container" class="alerts">{{#each alerts}}<h2 class="headline alert">High load generated an alert - load = {{load}}, triggered at {{created_at}}</h2>{{/each}}</aside>
+
+<aside id="alerts-container" class="alerts">
+{{#each alerts}}
+    <h2 class="headline alert">
+    {{#if isRecovery}}
+        Alert recovered at {{created_at}}
+    {{else}}
+        High load generated an alert - load = {{load}}, triggered at {{created_at}}
+    {{/if}}
+    </h2>
+{{/each}}
+
+</aside>
+
 <div data-data='{{{uptimes}}}'></div>

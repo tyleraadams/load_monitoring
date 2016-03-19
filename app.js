@@ -20,14 +20,7 @@ managers.forEach(function (manager) {
   let scope = {};
   scope[manager] = require(manager);
   new scope[manager]().init();
-  // console.log(new require(manager)().init());
-  // new require(manager)().init();
 });
-
-
-// var Alert = require(config.root + '/app/managers/alerts');
-// var alert = new Alert();
-// alert.init();
 
 var app = express();
 
