@@ -18,8 +18,22 @@ module.exports = function () {
 
     x.domain(d3.extent(data, function(d) { return new Date(d.created_at); }));
     y.domain([0, d3.max(data.map(function(item){return parseFloat(item.value)}))]);
-
     return {x: x, y: y};
+  }
+
+
+  function createClipPath (svg, axes) {
+    var defs = svg.append("defs");
+      defs.append("clipPath")
+      .attr('id', 'clip')
+      .append('rect')
+      .attr('width', width - 38)
+      .attr('height', height - 18);
+
+    var clipPath = svg.append("g")
+    .attr('clip-path', "url(#clip)");
+
+    return clipPath;
   }
 
   function createAxes(svg, xY) {
@@ -46,17 +60,12 @@ module.exports = function () {
       return {axis: axis, yAxis: yAxis};
   }
 
-  function drawLine (svg, xY, data) {
+  function drawLine (clipPath, xY, data) {
     var line = d3.svg.line()
     .x(function(d) { return xY.x(new Date(d.created_at)); })
     .y(function(d) { return xY.y(parseFloat(d.value)); });
 
-
-
-    var clipPath = svg.append("g")
-    .attr('clip-path', "url(#clip)");
-
-    var path = svg.append("path")
+    var path = clipPath.append("path")
       .datum(data)
       .attr("class", "line")
       .attr("d", line);
@@ -74,7 +83,9 @@ module.exports = function () {
     return svg;
   }
 
-  function redrawLine (pathLine) {
+  function redrawLine (pathLine, xY) {
+    // console.log(xY.x());
+
     pathLine.path
     .attr("d", pathLine.line)
     .attr("transform", null)
@@ -83,8 +94,11 @@ module.exports = function () {
   }
 
   function updateDomains (xY, axes) {
+    // console.log(xY.x.axis());
     xY.x.domain(d3.extent(data, function(d) { return new Date(d.created_at); }));
     axes.axis.call(xY.x.axis);
+    // var tickArr = xY.x.ticks(2);
+    // console.log(xY.x(tickArr[tickArr.length - 1]) - xY.x(tickArr[tickArr.length - 2]));
     xY.y.domain([0, d3.max(data.map(function(item){return parseFloat(item.value)}))]);
     d3.select('.y.axis').call(axes.yAxis);
   }
@@ -93,14 +107,15 @@ module.exports = function () {
     var svg = drawChartBounds();
     var xY = createScales(data);
     var axes = createAxes(svg, xY);
-    var pathLine = drawLine(svg, xY, data);
+    var clipPath = createClipPath(svg, axes);
+    var pathLine = drawLine(clipPath, xY, data);
 
 
     poll(
       function() {
         $.get('/uptime', function(newData,err) {
           data.unshift(newData);
-          redrawLine(pathLine);
+          redrawLine(pathLine, xY);
           updateDomains(xY, axes);
           data.pop();
         });
