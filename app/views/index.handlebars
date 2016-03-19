@@ -1,4 +1,3 @@
-<h1>{{title }}</h1>
-<p>Welcome to {{title }}</p>
-<aside>{{#each alerts}}<h2>High load generated an alert - load = {{load}}, triggered at {{created_at}}</h2>{{/each}}</aside>
+<h1>{{title}}</h1>
+<aside id="alerts-container" class="alerts">{{#each alerts}}<h2 class="headline alert">High load generated an alert - load = {{load}}, triggered at {{created_at}}</h2>{{/each}}</aside>
 <div data-data='{{{uptimes}}}'></div>

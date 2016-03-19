@@ -6,3 +6,4 @@ window.onload = function () {
   uptimes.init();
   alerts.init();
 };
+
