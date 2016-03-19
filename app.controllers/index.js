@@ -3,11 +3,6 @@ var express = require('express'),
   mongoose = require('mongoose'),
   Uptime = mongoose.model('Uptime'),
   Alert = mongoose.model('Alert');
-var exec   = require('child_process').exec;
-var command = 'uptime';
-module.exports = function (app) {
-  app.use('/', router);
-};
 
 router.get('/', function (req, res, next) {
   const P1 = new Promise(function (resolve, reject) {
@@ -29,7 +24,7 @@ router.get('/', function (req, res, next) {
     const uptimes = results[0];
     const alerts = results[1];
     res.render('index', {
-      title: 'Generator-Express MVC',
+      title: 'Load Monitoring',
       uptimes: JSON.stringify(uptimes),
       alerts: alerts
     });
@@ -37,8 +32,6 @@ router.get('/', function (req, res, next) {
 
 });
 
-router.get('/uptime', function (req,res,next) {
-  Uptime.findOne().sort({created_at: -1}).exec(function(err, uptime) {
-    res.send(uptime);
-  });
-});
+module.exports = function (app) {
+  app.use('/', router);
+};

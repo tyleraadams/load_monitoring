@@ -20,7 +20,6 @@ managers.forEach(function (manager) {
   let scope = {};
   scope[manager] = require(manager);
   new scope[manager]().init();
-  console.log(scope[manager]());
   // console.log(new require(manager)().init());
   // new require(manager)().init();
 });
