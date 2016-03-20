@@ -3,7 +3,7 @@
 
 Now using node v5.7.1 (npm v3.6.0)
 
-Run `npm i`, `mongo` and `gulp` to get started
+Run `npm i`, `mongod` and `gulp` to get started
 
 http://www.howtogeek.com/194642/understanding-the-load-average-on-linux-and-other-unix-like-systems/
 
