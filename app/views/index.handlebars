@@ -3,8 +3,8 @@
 <aside id="alerts-container" class="alerts">
 {{#each alerts}}
     <h2 class="headline alert">
-    {{#if isRecovery}}
-        Alert recovered at {{created_at}}
+    {{#if recovered_at}}
+        Alert recovered at {{recovered_at}}
     {{else}}
         High load generated an alert - load = {{load}}, triggered at {{created_at}}
     {{/if}}

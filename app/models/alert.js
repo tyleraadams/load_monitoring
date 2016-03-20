@@ -5,9 +5,7 @@ var mongoose = require('mongoose'),
 
 var AlertSchema = new Schema({
   load: String,
-  time: Date,
-  uptime: String,
-  isRecovery: Boolean,
+  recovered_at: Boolean,
   created_at: { type: Date, default: Date.now }
 });
 

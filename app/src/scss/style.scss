@@ -1,6 +1,12 @@
+$main: #447BA8;
+$writing: snow;
+
+@import 'typography';
+
 body {
   padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+  font: 12px "Open Sans", Helvetica, Arial, sans-serif;
+  background: $main;
 }
 
 a {
@@ -12,19 +18,16 @@ body a {
 }
 
 
-body {
-font: 10px sans-serif;
-}
 .axis path,
 .axis line {
 fill: none;
-stroke: #000;
+stroke: $writing;
 shape-rendering: crispEdges;
 }
 
 .line {
 fill: none;
-stroke: steelblue;
+stroke: $writing;
 stroke-width: 1.5px;
 }
 

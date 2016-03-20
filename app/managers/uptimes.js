@@ -1,3 +1,4 @@
+'use strict';
 var Uptime = require('../models/uptime');
 var exec   = require('child_process').exec;
 var command = 'uptime';
@@ -5,7 +6,6 @@ var command = 'uptime';
 var UptimeManager = function () {};
 
 UptimeManager.prototype.init = function () {
-  'use strict';
   setInterval(function () {
     exec(command, function (err, stdout, stderr){
       const oneMinuteUptimeValue = stdout.match(/\d+\.\d*/)[0] || 0;

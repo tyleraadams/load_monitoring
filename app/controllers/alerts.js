@@ -5,7 +5,6 @@ var express = require('express'),
 
 router.get('/', function (req,res,next) {
   Alert.findOne().sort({created_at: -1}).exec(function(err, alert) {
-    console.log('!! ',  alert);
     res.send(alert);
   });
 });

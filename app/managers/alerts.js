@@ -1,13 +1,14 @@
-var Alert = require('../models/alert.js');
-var Uptime = require('../models/uptime.js');
+'use strict';
+const Alert = require('../models/alert.js');
+const Uptime = require('../models/uptime.js');
 const calculateAverage = require('../helpers/calculateAverage');
-
+const alertThreshold = 1.5;
 const AlertManager = function () {
   this.isInAlertState = false;
+  this.alert = null;
 };
 
 AlertManager.prototype.init = function () {
-  'use strict';
   const self = this;
   setInterval(function() {
     const promise = new Promise(function(resolve, reject) {
@@ -15,10 +16,8 @@ AlertManager.prototype.init = function () {
         return resolve(uptimes);
       });
     });
-
     promise.then(function(results) {
       let avg = calculateAverage(results.map(function (item) { return  parseFloat(item.value); }));
-      console.log(avg);
       self.determineAlertState(avg);
     }).catch(
       function(reason) {
@@ -26,25 +25,43 @@ AlertManager.prototype.init = function () {
       });
   }, 10000);
 };
-
-AlertManager.prototype.createAlert =  function (dataPoint, isRecovery) {
-  'use strict';
+AlertManager.prototype.createAlert =  function (dataPoint) {
   let alert = new Alert({
-    load:dataPoint,
-    isRecovery: isRecovery
+    load:dataPoint
   });
+  this.alert = alert;
+  this.isInAlertState = true;
   alert.save();
-
 };
-
-AlertManager.prototype.determineAlertState =  function  (avg) {
+AlertManager.prototype.recoverAlert = function (dataPoint) {
+  const self = this;
+  if (this.alert) {
+    this.updateAlertWithRecovery(this.alert);
+    this.alert = null;
+  } else {
+    new Promise (function(resolve, reject) {
+      Alert.findOne().sort({created_at: -1}).exec(function(err, alert) {
+        return resolve(alert)
+      });
+    }).then(function (result) {
+      self.updateAlertWithRecovery(result)
+    });
+  }
+  this.isInAlertState = false;
+};
+AlertManager.prototype.updateAlertWithRecovery = function (alertObject) {
+  console.log('ALERT OBJ ', alertObject);
+  let now = new Date();
+  console.log(now)
+  alertObject.recovered_at = now;
+  alertObject.save();
+};
+AlertManager.prototype.determineAlertState =  function (avg) {
   'use strict';
-  if (avg > 1) {
-    this.createAlert(avg, false);
-     this.isInAlertState = true;
-  } else if (avg < 1 && this.isInAlertState) {
-    this.createAlert(avg, true);
-    this.isInAlertState = false;
+  if (avg > alertThreshold && !this.isInAlertState) {
+    this.createAlert(avg);
+  } else if (avg < alertThreshold && this.isInAlertState) {
+    this.recoverAlert(avg);
   }
 };
 

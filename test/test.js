@@ -1,8 +1,8 @@
-'use strict';
-let assert = require('assert');
+// 'use strict';
+const assert = require('assert');
 const AlertManager = require('../app/managers/alerts');
 const calculateAverage = require('../app/helpers/calculateAverage');
-let alertManager = new AlertManager();
+const alertManager = new AlertManager();
 
 describe('alertManager', function() {
   describe('#determineAlertState()', function () {
