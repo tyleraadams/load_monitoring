@@ -24,11 +24,17 @@ describe('alertManager', function() {
 
     });
 
-     it('should create an alert if the average load for the last two minutes drops below one', function () {
-      const stub = [{value: 0.8}, {value: 0.1}, {value: 0.2}, {value: 0.4}, {value: 0.5}];
-      const avg = calculateAverage(stub.map(function(item){ return item.value; }));
+     it('should resolve a previously created alert if the average load for the last two minutes drops below one and the current alert state is true', function () {
+      'use strict';
+      let stub = [{value: 1.1}, {value: 1.6}, {value: 1.5}, {value: 1.6}, {value: 1.5},{value: 2}];
+      let avg = calculateAverage(stub.map(function(item){ return item.value; }));
       alertManager.determineAlertState(avg);
+      stub = [{value: 0.8}, {value: 0.1}, {value: 0.2}, {value: 0.4}, {value: 0.5}];
+      avg = calculateAverage(stub.map(function(item){ return item.value; }));
+      alertManager.determineAlertState(avg);
+      console.log('!! ', alertManager);
       assert.equal(alertManager.isInAlertState,false);
+      assert.equal(alertManager.alert.hasOwnProperty('recovered_at'),true);
     });
   });
 });

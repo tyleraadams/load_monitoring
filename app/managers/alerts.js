@@ -2,13 +2,14 @@
 const Alert = require('../models/alert.js');
 const Uptime = require('../models/uptime.js');
 const calculateAverage = require('../helpers/calculateAverage');
-const alertThreshold = 1.5;
+const alertThreshold = 1.9;
 const AlertManager = function () {
   this.isInAlertState = false;
   this.alert = null;
 };
 
 AlertManager.prototype.init = function () {
+  'use strict';
   const self = this;
   setInterval(function() {
     const promise = new Promise(function(resolve, reject) {
@@ -45,6 +46,8 @@ AlertManager.prototype.recoverAlert = function (dataPoint) {
       });
     }).then(function (result) {
       self.updateAlertWithRecovery(result)
+    }).catch(function(reason) {
+      console.error('Handle rejected promise ('+reason+') here.');
     });
   }
   this.isInAlertState = false;
@@ -52,12 +55,12 @@ AlertManager.prototype.recoverAlert = function (dataPoint) {
 AlertManager.prototype.updateAlertWithRecovery = function (alertObject) {
   console.log('ALERT OBJ ', alertObject);
   let now = new Date();
-  console.log(now)
+  console.log(' THIS SHOULD BE A DATTTTTEEEE !! ! ! ! !! ', now);
   alertObject.recovered_at = now;
   alertObject.save();
 };
 AlertManager.prototype.determineAlertState =  function (avg) {
-  'use strict';
+  console.log('avg= ', avg, 'alertState = ', this.isInAlertState, 'alert: ', this.alert);
   if (avg > alertThreshold && !this.isInAlertState) {
     this.createAlert(avg);
   } else if (avg < alertThreshold && this.isInAlertState) {

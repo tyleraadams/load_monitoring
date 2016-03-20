@@ -3,7 +3,9 @@ var $ = require('jquery');
 
 module.exports = function () {
   var alertsContainer = document.getElementById('alerts-container');
-  var currentAlert;
+  var previousAlert;
+  var recoveredAlert;
+  var isInAlertState = false;
   function init() {
     poll(function () {
       fetchAlert();
@@ -11,12 +13,37 @@ module.exports = function () {
   }
   function fetchAlert () {
     $.get('/alerts', function (latestAlert,err) {
-      if (!currentAlert && latestAlert) {
-        currentAlert = latestAlert;
+      console.log('!! ', latestAlert);
+
+      debugger;
+      // if the response is empty do nothing
+      if (!latestAlert) {
+        return;
       }
-      if (latestAlert && currentAlert._id !== latestAlert._id) {
-        currentAlert = latestAlert;
+      // if there hasn't already been alert cached, then cache it and attach new message from alert
+      if (!isInAlertState && !previousAlert) {
+        previousAlert = latestAlert;
+        isInAlertState = true;
         addToDOM(constructAlertDOM(latestAlert));
+        return isInAlertState ;
+      }
+      // if the previousAlert._id and latestAlert._id match, the only reason you would display something is if there is recovered_at and that recoverd_at hasn't been displayed
+
+      if (isInAlertState && latestAlert.recovered_at && previousAlert._id === latestAlert._id){
+        previousAlert = latestAlert;
+        recoveredlert = latestAlert;
+        addToDOM(constructAlertDOM(latestAlert));
+        isInAlertState = false;
+        return isInAlertState;
+      }
+
+      // if the previous._id and the latest._id dont' match then you should crate a new alert
+
+      if (!isInAlertState && previousAlert._id !== latestAlert._id){
+        previousAlert = latestAlert;
+        addToDOM(constructAlertDOM(latestAlert));
+        isInAlertState = true;
+        return isInAlertState;
       }
     });
   }
@@ -26,10 +53,10 @@ module.exports = function () {
     alert.classList.add('headline', 'alert');
 
     if (alertObj.recovered_at) {
-      message = 'Alert recovered at ' +  alertObj.recoverd_at;
+      message = 'Alert recovered at ' +  alertObj.recovered_at;
     }
 
-    alert.textContent = message
+    alert.textContent = message;
     return alert;
   }
   function addToDOM(el) {

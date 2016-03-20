@@ -2,13 +2,17 @@
 
 <aside id="alerts-container" class="alerts">
 {{#each alerts}}
-    <h2 class="headline alert">
+
     {{#if recovered_at}}
+    <h2 class="headline alert">
         Alert recovered at {{recovered_at}}
+        </h2>
     {{else}}
+        <h2 class="headline alert">
         High load generated an alert - load = {{load}}, triggered at {{created_at}}
+         </h2>
     {{/if}}
-    </h2>
+
 {{/each}}
 
 </aside>
