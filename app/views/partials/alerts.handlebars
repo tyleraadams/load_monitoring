@@ -1,0 +1,15 @@
+<aside class="alerts-outer-container">
+<h2>Alerts</h2>
+<div  id="alerts-container" class="alerts-inner">
+{{#each alerts}}
+    {{#if recovered_at}}
+    <h3 class="headline alert recovery">
+        <i class="icon-ok-circled"></i><span>Alert recovered at {{recovered_at}}</span>
+    </h3>
+    {{/if}}
+     <h3 class="headline alert">
+        <i class="icon-attention"></i><span>High load generated an alert - load = {{load}}, triggered at {{created_at}}</span>
+         </h3>
+{{/each}}
+</div>
+</aside>
