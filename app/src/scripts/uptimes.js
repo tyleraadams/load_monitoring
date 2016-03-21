@@ -5,11 +5,10 @@ var poll = require('./utils').poll;
 module.exports = function () {
   var data = $('div').data('data');
   var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+    width = 720 - margin.left - margin.right,
+    height = 375 - margin.top - margin.bottom;
 
   function createScales(data) {
-
     var x = d3.time.scale()
     .range([0, width]);
 
@@ -74,31 +73,25 @@ module.exports = function () {
   }
 
   function drawChartBounds () {
-    var svg = d3.select("body").append("svg")
+    var svg = d3.select("#chart-container").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
     .append("g")
     .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
     return svg;
   }
 
   function redrawLine (pathLine, xY) {
-    // console.log(xY.x());
-
     pathLine.path
     .attr("d", pathLine.line)
     .attr("transform", null)
     .transition()
-    .attr("transform", "translate(" + -13 + ")");
+    .attr("transform", "translate(" + -9.75 + ")");
   }
 
   function updateDomains (xY, axes) {
-    // console.log(xY.x.axis());
     xY.x.domain(d3.extent(data, function(d) { return new Date(d.created_at); }));
     axes.axis.call(xY.x.axis);
-    // var tickArr = xY.x.ticks(2);
-    // console.log(xY.x(tickArr[tickArr.length - 1]) - xY.x(tickArr[tickArr.length - 2]));
     xY.y.domain([0, d3.max(data.map(function(item){return parseFloat(item.value)}))]);
     d3.select('.y.axis').call(axes.yAxis);
   }

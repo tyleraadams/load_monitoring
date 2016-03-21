@@ -3,18 +3,11 @@ module.exports.poll = function (fn, callback, errback, timeout, interval) {
     interval = interval || 100;
 
     (function p() {
-            // If the condition is met, we're done!
-            if(fn()) {
-                callback();
-            }
-            // If the condition isn't met but the timeout hasn't elapsed, go again
-            // else if (Number(new Date()) < endTime) {
-
-            // }
-            // Didn't match and too much time, reject!
-            else {
-                errback(new Error('timed out for ' + fn + ': ' + arguments));
-            }
-            setTimeout(p, interval);
+      if(fn()) {
+          callback();
+      } else {
+          errback(new Error('timed out for ' + fn + ': ' + arguments));
+      }
+      setTimeout(p, interval);
     })();
 }

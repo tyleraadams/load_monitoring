@@ -1,13 +1,32 @@
 $main: #447BA8;
 $writing: snow;
+$background-dark: #626c75;
+$background-light:#7d7b80;
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#7d7e7d+0,4c4c4c+100 */
 
 
 body {
   padding: 50px;
   font: 12px "Open Sans", Helvetica, Arial, sans-serif;
-  background: $main;
+  color: $writing;
+
+
+
+background: #3D7EAA; /* fallback for old browsers */
+background: -webkit-linear-gradient(to left, #3D7EAA , #FFE47A); /* Chrome 10-25, Safari 5.1-6 */
+background: linear-gradient(to left, #3D7EAA , #FFE47A); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
 }
 
+h1 {
+  font-size: 3em;
+}
+h2 {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+h3 {
+  font-size: 0.9em;
+}
 a {
   color: #00B7FF;
 }
@@ -30,15 +49,44 @@ stroke: $writing;
 stroke-width: 1.5px;
 }
 
-.alerts {
+
+
+.alerts-outer-container {
   width: 300px;
-  height: 400px;
-  overflow: scroll;
-  border:1px solid black;
+  float:left;
+}
+
+.alerts-inner {
+  height: 336px;
+  overflow: auto;
+}
+
+i {
+  font-size: 2em;
+  float: left;
 }
 .headline.alert {
-  border: 1px solid red;
   max-width: 100%;
   margin: 0;
   padding: 7px;
+  background: gold;
+  color: black;
+  border-bottom: 3px solid black;
+  overflow: auto;
+  span {
+    float: right;
+    width: 80%;
+  }
+}
+.headline.recovery {
+  background: green;
+}
+
+.chart-container {
+  width:720px;
+  float: left;
+   margin-left: 12px;
+   h2 {
+    margin-bottom: -13px;
+   }
 }

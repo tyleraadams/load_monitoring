@@ -13,9 +13,6 @@ module.exports = function () {
   }
   function fetchAlert () {
     $.get('/alerts', function (latestAlert,err) {
-      console.log('!! ', latestAlert);
-
-      debugger;
       // if the response is empty do nothing
       if (!latestAlert) {
         return;
@@ -28,17 +25,19 @@ module.exports = function () {
         return isInAlertState ;
       }
       // if the previousAlert._id and latestAlert._id match, the only reason you would display something is if there is recovered_at and that recoverd_at hasn't been displayed
+      if (isInAlertState && latestAlert.recovered_at) {
 
-      if (isInAlertState && latestAlert.recovered_at && previousAlert._id === latestAlert._id){
+        if (recoveredAlert && recoveredAlert._id === latestAlert._id){
+          return;
+        }
         previousAlert = latestAlert;
-        recoveredlert = latestAlert;
+        recoveredAlert = latestAlert;
         addToDOM(constructAlertDOM(latestAlert));
         isInAlertState = false;
         return isInAlertState;
       }
 
       // if the previous._id and the latest._id dont' match then you should crate a new alert
-
       if (!isInAlertState && previousAlert._id !== latestAlert._id){
         previousAlert = latestAlert;
         addToDOM(constructAlertDOM(latestAlert));
@@ -48,15 +47,21 @@ module.exports = function () {
     });
   }
   function constructAlertDOM (alertObj) {
-    var alert = document.createElement('h2');
+    var alert = document.createElement('h3');
+    var icon = document.createElement('i');
+    var span = document.createElement('span');
     var message = 'High load generated an alert - load = ' + alertObj.load+ ', triggered at ' + alertObj.created_at;
     alert.classList.add('headline', 'alert');
-
+    icon.classList.add('icon-attention');
     if (alertObj.recovered_at) {
-      message = 'Alert recovered at ' +  alertObj.recovered_at;
+      alert.classList.add('recovery');
+      message = 'Alert recovered at ' +  new Date(alertObj.recovered_at);
+      icon.classList.add('icon-ok-circled');
     }
 
-    alert.textContent = message;
+    span.textContent = message;
+    alert.appendChild(icon);
+    alert.appendChild(span);
     return alert;
   }
   function addToDOM(el) {
