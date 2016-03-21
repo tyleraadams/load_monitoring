@@ -1,0 +1,22 @@
+.axis path,
+.axis line {
+  fill: none;
+  stroke: $writing;
+  shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none;
+  stroke: $writing;
+  stroke-width: 1.5px;
+}
+
+.chart-container {
+  width:720px;
+  float: left;
+  margin-left: 12px;
+
+  h2 {
+    margin-bottom: -13px;
+  }
+}

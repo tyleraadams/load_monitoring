@@ -1,0 +1,33 @@
+.alerts-outer-container {
+  width: 300px;
+  float:left;
+}
+
+.alerts-inner {
+  height: 336px;
+  overflow: auto;
+}
+
+i {
+  font-size: 2em;
+  float: left;
+}
+
+.headline.alert {
+  max-width: 100%;
+  margin: 0;
+  padding: 7px;
+  background: gold;
+  color: black;
+  border-bottom: 3px solid black;
+  overflow: auto;
+
+  span {
+    float: right;
+    width: 80%;
+  }
+}
+
+.headline.recovery {
+  background: green;
+}

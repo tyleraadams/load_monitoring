@@ -1,0 +1,29 @@
+body {
+  padding: 50px;
+  font: 12px "Open Sans", Helvetica, Arial, sans-serif;
+  color: $writing;
+  background: #3D7EAA; /* fallback for old browsers */
+  background: -webkit-linear-gradient(to left, #3D7EAA , #FFE47A); /* Chrome 10-25, Safari 5.1-6 */
+  background: linear-gradient(to left, #3D7EAA , #FFE47A); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+h1 {
+  font-size: 3em;
+}
+
+h2 {
+  margin-top: 0;
+  margin-bottom: 5px;
+}
+
+h3 {
+  font-size: 0.9em;
+}
+
+a {
+  color: #00B7FF;
+}
+
+body a {
+  background: blue;
+}
