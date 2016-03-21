@@ -12,3 +12,6 @@ insert_final_newline = true
 
 [*.handlebars]
 indent_size = 4
+
+[app/src/scripts/*.js]
+indent_size = 4

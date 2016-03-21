@@ -3,11 +3,11 @@ module.exports.poll = function (fn, callback, errback, timeout, interval) {
     interval = interval || 100;
 
     (function p() {
-      if(fn()) {
-          callback();
-      } else {
-          errback(new Error('timed out for ' + fn + ': ' + arguments));
-      }
-      setTimeout(p, interval);
+        if(fn()) {
+            callback();
+        } else {
+            errback(new Error('timed out for ' + fn + ': ' + arguments));
+        }
+        setTimeout(p, interval);
     })();
-}
+};

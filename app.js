@@ -1,16 +1,16 @@
 'use strict';
-var express = require('express'),
-  config = require('./config/config'),
-  glob = require('glob'),
-  mongoose = require('mongoose');
+const express = require('express');
+const config = require('./config/config');
+const glob = require('glob');
+const mongoose = require('mongoose');
 mongoose.connect(config.db);
-var db = mongoose.connection;
+const db = mongoose.connection;
 db.on('error', function () {
   throw new Error('unable to connect to database at ' + config.db);
 });
 
-var models = glob.sync(config.root + '/app/models/*.js');
-var managers = glob.sync(config.root + '/app/managers/*.js');
+const models = glob.sync(config.root + '/app/models/*.js');
+const managers = glob.sync(config.root + '/app/managers/*.js');
 
 models.forEach(function (model) {
   require(model);
@@ -22,7 +22,7 @@ managers.forEach(function (manager) {
   new scope[manager]().init();
 });
 
-var app = express();
+const app = express();
 
 require('./config/express')(app, config);
 
