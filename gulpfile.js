@@ -40,11 +40,16 @@ gulp.task('develop', function () {
 });
 
 gulp.task('buildScripts', function() {
-    return browserify(sourceFile)
-        .bundle()
-        .pipe(source(destFileName))
-        .pipe(gulp.dest('public/js'));
+  return browserify(sourceFile)
+      .bundle()
+      .pipe(source(destFileName))
+      .pipe(gulp.dest('public/js'));
 });
+
+gulp.task('transferFonts', function () {
+  return gulp.src('./app/src/fonts/*')
+  .pipe(gulp.dest('public/fonts'));
+})
 
 gulp.task('default', [
   'sass',
