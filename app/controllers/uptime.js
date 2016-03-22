@@ -1,10 +1,14 @@
-var express = require('express'),
-  router = express.Router(),
-  mongoose = require('mongoose'),
-  Uptime = mongoose.model('Uptime');
+'use strict';
+const express = require('express');
+const  router = express.Router();
+const  mongoose = require('mongoose');
+const  Uptime = mongoose.model('Uptime');
 
-router.get('/', function (req,res,next) {
-  Uptime.findOne().sort({created_at: -1}).exec(function(err, uptime) {
+router.get('/', function (req, res) {
+  Uptime.findOne().sort({ created_at: -1 }).exec(function (err, uptime) {
+    if (err) {
+      return err;
+    }
     res.send(uptime);
   });
 });

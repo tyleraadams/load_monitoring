@@ -1,10 +1,11 @@
-var express = require('express'),
-  router = express.Router(),
-  mongoose = require('mongoose'),
-  Alert = mongoose.model('Alert');
+'use strict';
+const express = require('express');
+const  router = express.Router();
+const  mongoose = require('mongoose');
+const Alert = mongoose.model('Alert');
 
-router.get('/', function (req,res,next) {
-  Alert.findOne().sort({created_at: -1}).exec(function(err, alert) {
+router.get('/', function (req, res) {
+  Alert.findOne().sort({created_at: -1}).exec(function (err, alert) {
     res.send(alert);
   });
 });

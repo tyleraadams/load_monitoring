@@ -1,5 +1,6 @@
+'use strict';
 var alerts = require('./alerts')(),
-  uptimes = require('./uptimes')();
+    uptimes = require('./uptimes')();
 
 window.onload = function () {
     uptimes.init();

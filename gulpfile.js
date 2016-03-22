@@ -4,11 +4,35 @@ var gulp = require('gulp'),
   livereload = require('gulp-livereload'),
   sass = require('gulp-sass'),
   browserify = require('browserify'),
-  source = require('vinyl-source-stream');
+  source = require('vinyl-source-stream'),
+  eslint = require('gulp-eslint');
 
 var sourceFile = './app/src/scripts/app.js',
   destFolder = './public/js',
   destFileName = 'app.js';
+
+
+var eslintConfig = {
+  client: {
+    files: [
+      'app/src/scripts/**/*.js'
+    ],
+    conf: {
+      configFile: './eslint-client.json'
+    }
+  },
+  server: {
+    files: [
+      'app/controllers/*.js',
+      'app/helpers/*.js',
+      'app/managers/*.js',
+      'app/models/*.js'
+    ],
+    conf: {
+        configFile: './eslint-server.json'
+    }
+  }
+};
 
 gulp.task('sass', function () {
   gulp.src('./app/src/scss/*.scss')
@@ -41,17 +65,33 @@ gulp.task('develop', function () {
 
 gulp.task('buildScripts', function() {
   return browserify(sourceFile)
-      .bundle()
-      .pipe(source(destFileName))
-      .pipe(gulp.dest('public/js'));
+    .bundle()
+    .pipe(source(destFileName))
+    .pipe(gulp.dest('public/js'));
 });
 
 gulp.task('transferFonts', function () {
   return gulp.src('./app/src/fonts/*')
-  .pipe(gulp.dest('public/fonts'));
+    .pipe(gulp.dest('public/fonts'));
 })
 
+gulp.task('lint-client', function () {
+    return gulp.src(eslintConfig.client.files)
+      .pipe(eslint(eslintConfig.client.conf))
+      .pipe(eslint.format());
+
+});
+
+gulp.task('lint-server', function () {
+    return gulp.src(eslintConfig.server.files)
+      .pipe(eslint(eslintConfig.server.conf))
+      .pipe(eslint.format());
+});
+
+gulp.task('lint', ['lint-server', 'lint-client']);
+
 gulp.task('default', [
+  'transferFonts',
   'sass',
   'buildScripts',
   'develop',

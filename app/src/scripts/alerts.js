@@ -1,3 +1,4 @@
+'use strict';
 var poll = require('./utils').poll;
 var $ = require('jquery');
 
@@ -6,14 +7,15 @@ module.exports = function () {
     var previousAlert;
     var recoveredAlert;
     var isInAlertState = false;
+
     function init() {
         poll(function () {
             fetchAlert();
-        }, function(){}, function(){}, null, 10000);
+        }, 10000);
     }
 
-    function fetchAlert () {
-        $.get('/alerts', function (latestAlert,err) {
+    function fetchAlert() {
+        $.get('/alerts', function (latestAlert) {
             // if the response is empty do nothing
             if (!latestAlert) {
                 return;
@@ -23,7 +25,7 @@ module.exports = function () {
                 previousAlert = latestAlert;
                 isInAlertState = true;
                 addToDOM(constructAlertDOM(latestAlert));
-                return isInAlertState ;
+                return isInAlertState;
             }
             // if the previousAlert._id and latestAlert._id match, the only reason you would display something is if there is recovered_at and that recoverd_at hasn't been displayed
             if (isInAlertState && latestAlert.recovered_at) {
@@ -47,17 +49,19 @@ module.exports = function () {
             }
         });
     }
-    function constructAlertDOM (alertObj) {
+
+    function constructAlertDOM(alertObj) {
         var alert = document.createElement('h3');
         var icon = document.createElement('i');
         var span = document.createElement('span');
-        var message = 'High load generated an alert - load = ' + alertObj.load+ ', triggered at ' + alertObj.created_at;
+        var message = 'High load generated an alert - load = ' + alertObj.load + ', triggered at ' + alertObj.created_at;
         alert.classList.add('headline', 'alert');
         icon.classList.add('icon-attention');
+
         if (alertObj.recovered_at) {
-        alert.classList.add('recovery');
-        message = 'Alert recovered at ' +  new Date(alertObj.recovered_at);
-        icon.classList.add('icon-ok-circled');
+            alert.classList.add('recovery');
+            message = 'Alert recovered at ' +  new Date(alertObj.recovered_at);
+            icon.classList.add('icon-ok-circled');
         }
 
         span.textContent = message;
@@ -65,10 +69,12 @@ module.exports = function () {
         alert.appendChild(span);
         return alert;
     }
+
     function addToDOM(el) {
         alertsContainer.insertBefore(el, alertsContainer.firstChild);
     }
+
     return {
-        init:init
+        init: init
     };
 };

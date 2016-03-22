@@ -1,13 +1,7 @@
-module.exports.poll = function (fn, callback, errback, timeout, interval) {
-    var endTime = Number(new Date()) + (timeout || 2000);
-    interval = interval || 100;
-
+'use strict';
+module.exports.poll = function (fn, interval) {
     (function p() {
-        if(fn()) {
-            callback();
-        } else {
-            errback(new Error('timed out for ' + fn + ': ' + arguments));
-        }
+        fn();
         setTimeout(p, interval);
     })();
 };

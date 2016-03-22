@@ -1,26 +1,27 @@
+'use strict';
 var $ = require('jquery');
 var d3 = require('d3');
 var poll = require('./utils').poll;
 
 module.exports = function () {
-    var data = $('div').data('data');
-    var margin = {top: 20, right: 20, bottom: 30, left: 50},
-    width = 720 - margin.left - margin.right,
-    height = 375 - margin.top - margin.bottom;
+    var data = $('div').data('data'),
+        margin = { top: 20, right: 20, bottom: 30, left: 50 },
+        width = 720 - margin.left - margin.right,
+        height = 375 - margin.top - margin.bottom;
 
-    function createScales(data) {
+    function createScales() {
         var x = d3.time.scale()
         .range([0, width]);
 
         var y = d3.scale.linear()
         .range([height, 0]);
 
-        x.domain(d3.extent(data, function(d) { return new Date(d.created_at); }));
-        y.domain([0, d3.max(data.map(function(item){ return parseFloat(item.value); }))]);
-        return {x: x, y: y};
+        x.domain(d3.extent(data, function (d) { return new Date(d.created_at); }));
+        y.domain([0, d3.max(data.map(function (item) { return parseFloat(item.value); }))]);
+        return { x: x, y: y };
     }
 
-    function createClipPath (svg, axes) {
+    function createClipPath(svg) {
         var defs = svg.append("defs");
         defs.append("clipPath")
         .attr('id', 'clip')
@@ -58,20 +59,19 @@ module.exports = function () {
         return { axis: axis, yAxis: yAxis };
     }
 
-    function drawLine (clipPath, xY, data) {
+    function drawLine(clipPath, xY) {
         var line = d3.svg.line()
-        .x(function(d) { return xY.x(new Date(d.created_at)); })
-        .y(function(d) { return xY.y(parseFloat(d.value)); });
+        .x(function (d) { return xY.x(new Date(d.created_at)); })
+        .y(function (d) { return xY.y(parseFloat(d.value)); });
 
         var path = clipPath.append("path")
         .datum(data)
         .attr("class", "line")
         .attr("d", line);
-
-        return { path: path, line:line };
+        return { path: path, line: line };
     }
 
-    function drawChartBounds () {
+    function drawChartBounds() {
         var svg = d3.select("#chart-container").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -80,7 +80,7 @@ module.exports = function () {
         return svg;
     }
 
-    function redrawLine (pathLine, xY) {
+    function redrawLine(pathLine) {
         pathLine.path
         .attr("d", pathLine.line)
         .attr("transform", null)
@@ -88,37 +88,29 @@ module.exports = function () {
         .attr("transform", "translate(" + -9.75 + ")");
     }
 
-    function updateDomains (xY, axes) {
-        xY.x.domain(d3.extent(data, function(d) { return new Date(d.created_at); }));
+    function updateDomains(xY, axes) {
+        xY.x.domain(d3.extent(data, function (d) { return new Date(d.created_at); }));
         axes.axis.call(xY.x.axis);
-        xY.y.domain([0, d3.max(data.map(function(item){ return parseFloat(item.value); }))]);
+        xY.y.domain([0, d3.max(data.map(function (item) { return parseFloat(item.value); }))]);
         d3.select('.y.axis').call(axes.yAxis);
     }
 
-    function init () {
+    function init() {
         var svg = drawChartBounds();
-        var xY = createScales(data);
+        var xY = createScales();
         var axes = createAxes(svg, xY);
         var clipPath = createClipPath(svg, axes);
-        var pathLine = drawLine(clipPath, xY, data);
-
+        var pathLine = drawLine(clipPath, xY);
 
         poll(
-            function() {
-                $.get('/uptime', function(newData,err) {
+            function () {
+                $.get('/uptime', function (newData) {
                     data.unshift(newData);
                     redrawLine(pathLine, xY);
                     updateDomains(xY, axes);
                     data.pop();
                 });
-            },
-            function() {
-            // Done, success callback
-            },
-            function() {
-            // Error, failure callback
-            }
-            , null, 10000);
+            }, 10000);
     }
 
     return {
