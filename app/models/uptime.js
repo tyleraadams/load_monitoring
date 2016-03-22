@@ -10,7 +10,7 @@ const UptimeSchema = new Schema({
 UptimeSchema.statics.findLastTwoMinutes = function (cb) {
   let q = this.model('Uptime').find({created_at: {
     $gt: new Date(new Date().getTime() - 1000 * 60 * 2).toISOString()
-  }}).sort({'crated_at': -1});
+  }}).sort({'created_at': -1});
   q.exec(cb);
 };
 
