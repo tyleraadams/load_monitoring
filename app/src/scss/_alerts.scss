@@ -17,7 +17,7 @@ i {
   max-width: 100%;
   margin: 0;
   padding: 7px;
-  background: #FACA66;
+  background: $alert;
   color: black;
   border-bottom: 3px solid black;
   overflow: auto;
@@ -29,5 +29,5 @@ i {
 }
 
 .headline.recovery {
-  background: #73BD6D;
+  background: $recovery;
 }

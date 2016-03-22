@@ -2,7 +2,7 @@
 const Alert = require('../models/alert.js');
 const Uptime = require('../models/uptime.js');
 const calculateAverage = require('../helpers/calculateAverage');
-const alertThreshold = 1.9;
+const alertThreshold = 1;
 const AlertManager = function () {
   this.isInAlertState = false;
   this.alert = null;
@@ -16,7 +16,7 @@ AlertManager.prototype.init = function () {
   const self = this;
   setInterval(function () {
     const promise = new Promise(function (resolve) {
-      Uptime.findLastTwoMinutes(function (uptimes) {
+      Uptime.findLastTwoMinutes(function (err, uptimes) {
         return resolve(uptimes);
       });
     });

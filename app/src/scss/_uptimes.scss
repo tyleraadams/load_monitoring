@@ -1,13 +1,13 @@
 .axis path,
 .axis line {
   fill: none;
-  stroke: $writing;
+  stroke: $text-main;
   shape-rendering: crispEdges;
 }
 
 .line {
   fill: none;
-  stroke: $writing;
+  stroke: $text-main;
   stroke-width: 1.5px;
 }
 
@@ -18,5 +18,10 @@
 
   h2 {
     margin-bottom: -13px;
+    float: right;
   }
+}
+
+text {
+  fill: $text-main;
 }

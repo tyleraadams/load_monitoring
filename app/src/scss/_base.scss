@@ -1,14 +1,26 @@
 body {
   padding: 50px;
   font: 12px "Open Sans", Helvetica, Arial, sans-serif;
-  color: $writing;
-  background: #6B7CAE; /* fallback for old browsers */
-  // background: -webkit-linear-gradient(to left, #4b6cb7 , #182848); /* Chrome 10-25, Safari 5.1-6 */
-  // background: linear-gradient(to left, #4b6cb7 , #182848); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+  color: $text-main;
+  background: linear-gradient(to right bottom, $background-light 37%, $background-dark 76%);
+  background-size: cover;
+  height: calc(100vh - 100px);
+  // min-width: 1166px;
+  &:after {
+    content: ".";
+    display: block;
+    clear: both;
+    visibility: hidden;
+    line-height: 0;
+    height: 0;
+  }
 }
-
+main {
+  width: 100%;
+}
 h1 {
   font-size: 3em;
+  text-align: center;
 }
 
 h2 {
@@ -18,12 +30,4 @@ h2 {
 
 h3 {
   font-size: 0.9em;
-}
-
-a {
-  color: #00B7FF;
-}
-
-body a {
-  background: blue;
 }
