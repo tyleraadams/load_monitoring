@@ -9,6 +9,10 @@ module.exports = function () {
         width = 720 - margin.left - margin.right,
         height = 375 - margin.top - margin.bottom;
 
+    /*
+        uptimes createScales creates the scales and sets their range and domains
+        @return {Object} x (time) and y (load) scales
+    */
     function createScales() {
         var x = d3.time.scale()
         .range([0, width]);
@@ -21,6 +25,11 @@ module.exports = function () {
         return { x: x, y: y };
     }
 
+    /*
+        uptimes createClipPath creates the clippath and attaches it to our svgj obj. The clippath prevents the line from flowing out of boundaries
+        @param {Object} svg container object for our svg chart
+        @return {Object} clipPath
+    */
     function createClipPath(svg) {
         var defs = svg.append("defs");
         defs.append("clipPath")
@@ -35,6 +44,12 @@ module.exports = function () {
         return clipPath;
     }
 
+    /*
+        uptimes createAxes creates the x and y axes from our x and y scales and attaches them to our svg obj
+        @param {Object} svg container object for our svg chart
+        @param {Object} xy object contianing our scale objects
+        @return {Object} object containing our axes
+    */
     function createAxes(svg, xY) {
         var axis = svg.append("g")
         .attr("class", "x axis")
@@ -59,6 +74,12 @@ module.exports = function () {
         return { axis: axis, yAxis: yAxis };
     }
 
+    /*
+        uptimes drawLine creates a line calculated with our x and y data. it draws a path from the line and attaches it to our clippath
+        @param {Object} clipPath container our  clippath
+        @param {Object} xy object contianing our scale objects
+        @return {Object} object containing our axes
+    */
     function drawLine(clipPath, xY) {
         var line = d3.svg.line()
         .x(function (d) { return xY.x(new Date(d.created_at)); })
@@ -71,6 +92,10 @@ module.exports = function () {
         return { path: path, line: line };
     }
 
+    /*
+        uptimes drawChartBounds creates our SVG container based on desired width and margin
+        @return {Object} our svg container
+    */
     function drawChartBounds() {
         var svg = d3.select("#chart-container").append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -80,6 +105,10 @@ module.exports = function () {
         return svg;
     }
 
+    /*
+        uptimes redrawLine redraws the path based on new data, and moves the path to the left
+        @param {Object} pathLine contains our previously drawn path and line
+    */
     function redrawLine(pathLine) {
         pathLine.path
         .attr("d", pathLine.line)
@@ -88,6 +117,11 @@ module.exports = function () {
         .attr("transform", "translate(" + -9.75 + ")");
     }
 
+    /*
+        uptimes updateDomains updates teh domains of our x and y scales
+        @param {Object} xy contains our x and y scales
+        @param {Object} axes contains our x and y axes
+    */
     function updateDomains(xY, axes) {
         xY.x.domain(d3.extent(data, function (d) { return new Date(d.created_at); }));
         axes.axis.call(xY.x.axis);
@@ -95,6 +129,9 @@ module.exports = function () {
         d3.select('.y.axis').call(axes.yAxis);
     }
 
+    /*
+        uptimes init initializes our uptime clientside process, creates the chart and polls for new data every 10 seconds
+    */
     function init() {
         var svg = drawChartBounds();
         var xY = createScales();
