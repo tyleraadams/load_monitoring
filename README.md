@@ -10,15 +10,13 @@ Run `npm i`, and `gulp` to get started
 
 Works best in Chrome browser.
 
-Please allow server to run for ten minutes to amass enough data to display properly.
+Optimal display of data happens when we have ten minutes worth of data. Must wait 20 seconds for enough data to exist to display a line.
 
 The main logic for the application live in the `app/managers` directory for the server, and then in `app/src/alerts.js` and `app/src/uptimes.js` for the client.
 
 ##Areas to improve
 
 Need to handle the first ten minutes before enough data has accumulated more elegantly.
-
-I have hard-coded the distance to translate all chart x values, that should be dynamically determined. This is the main problem with displaying data before there is enough of it, the issue above.
 
 I would prefer to use sockets to eliminate AJAX polling.
 
