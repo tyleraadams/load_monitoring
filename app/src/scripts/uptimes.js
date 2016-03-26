@@ -8,7 +8,6 @@ module.exports = function () {
         margin = { top: 20, right: 20, bottom: 30, left: 50 },
         width = 720 - margin.left - margin.right,
         height = 375 - margin.top - margin.bottom;
-
     /*
         uptimes createScales creates the scales and sets their range and domains
         @return {Object} x (time) and y (load) scales
@@ -21,6 +20,7 @@ module.exports = function () {
         .range([height, 0]);
 
         x.domain(d3.extent(data, function (d) { return new Date(d.created_at); }));
+        x.clamp(true);
         y.domain([0, d3.max(data.map(function (item) { return parseFloat(item.value); }))]);
         return { x: x, y: y };
     }
@@ -109,12 +109,14 @@ module.exports = function () {
         uptimes redrawLine redraws the path based on new data, and moves the path to the left
         @param {Object} pathLine contains our previously drawn path and line
     */
-    function redrawLine(pathLine) {
+    function redrawLine(pathLine, xY) {
+        console.log('data =======> ', data);
         pathLine.path
         .attr("d", pathLine.line)
         .attr("transform", null)
         .transition()
-        .attr("transform", "translate(" + -9.75 + ")");
+        .attr("transform", "translate(" + xY.x(-1) + ")");
+        console.log(xY.x(-1));
     }
 
     /*
@@ -133,19 +135,47 @@ module.exports = function () {
         uptimes init initializes our uptime clientside process, creates the chart and polls for new data every 10 seconds
     */
     function init() {
+        var xY;
+        var axes;
+        var clipPath;
+        var pathLine;
         var svg = drawChartBounds();
-        var xY = createScales();
-        var axes = createAxes(svg, xY);
-        var clipPath = createClipPath(svg, axes);
-        var pathLine = drawLine(clipPath, xY);
+
+        // draw the chart if there is enough data to do so
+        if (data.length > 2) {
+
+            xY = createScales();
+            axes = createAxes(svg, xY);
+            clipPath = createClipPath(svg, axes);
+            pathLine = drawLine(clipPath, xY);
+        }
+
 
         poll(
             function () {
                 $.get('/uptime', function (newData) {
-                    data.unshift(newData);
-                    redrawLine(pathLine, xY);
-                    updateDomains(xY, axes);
-                    data.pop();
+                    if (newData) {
+                        data.unshift(newData);
+                    }
+
+                    // redraw the chart if there is enough data to do so
+                    if (data.length > 2) {
+                        redrawLine(pathLine, xY);
+                        updateDomains(xY, axes);
+
+                    // if there wasn't enough data sent from server for initial load,
+                    // we need to draw the scales, axes and line down here  for the first time
+                    } else if (data.length === 2) {
+                        xY = createScales();
+                        axes = createAxes(svg, xY);
+                        clipPath = createClipPath(svg, axes);
+                        pathLine = drawLine(clipPath, xY);
+                    }
+
+                    // only need to display ten minutes worth of data
+                    if (data.length > 60) {
+                        data.pop();
+                    }
                 });
             }, 10000);
     }
