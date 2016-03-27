@@ -110,13 +110,11 @@ module.exports = function () {
         @param {Object} pathLine contains our previously drawn path and line
     */
     function redrawLine(pathLine, xY) {
-        console.log('data =======> ', data);
         pathLine.path
         .attr("d", pathLine.line)
         .attr("transform", null)
         .transition()
         .attr("transform", "translate(" + xY.x(-1) + ")");
-        console.log(xY.x(-1));
     }
 
     /*
